@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.db.base import Base # Certifique-se que o caminho do seu Base está correto
+from app.db.base import Base 
 
 class User(Base):
     __tablename__ = "users"
@@ -33,15 +33,16 @@ class Perfil(Base):
     
     # --- Dados de Identidade ---
     cpf = Column(String, nullable=True)
-    phone = Column(String, nullable=True) # Campo de número/telefone
+    phone = Column(String, nullable=True)
     
     # --- Dados de Rede ---
-    proxy = Column(String, nullable=True) # Proxy principal
-    proxy2 = Column(String, nullable=True) # Segunda proxy (usada na filha)
+    proxy = Column(String, nullable=True)
+    proxy2 = Column(String, nullable=True)
     
     # --- Financeiro ---
     total_deposito = Column(Float, default=0.0)
     total_saque = Column(Float, default=0.0)
+    resgate_diario = Column(Float, default=0.0) # <--- NOVO CAMPO ADICIONADO
     
     # Relacionamento reverso
     ciclo = relationship("Ciclo", back_populates="perfis")

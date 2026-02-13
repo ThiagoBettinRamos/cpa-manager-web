@@ -24,6 +24,7 @@ class PerfilBase(BaseModel):
     proxy2: Optional[str] = None
     total_deposito: float = 0.0
     total_saque: float = 0.0
+    resgate_diario: float = 0.0  # <--- ADICIONADO
 
 class PerfilUpdate(BaseModel):
     # Todos os campos como opcionais para permitir atualização parcial
@@ -33,6 +34,7 @@ class PerfilUpdate(BaseModel):
     proxy2: Optional[str] = None
     total_deposito: Optional[float] = None
     total_saque: Optional[float] = None
+    resgate_diario: Optional[float] = None  # <--- ADICIONADO
 
 class PerfilResponse(PerfilBase):
     id: int
