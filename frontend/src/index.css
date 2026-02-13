@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Seus estilos globais customizados vêm DEPOIS */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0f172a; /* Slate 900 */
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Evita scrollbar indesejada nas animações 3D */
+}
