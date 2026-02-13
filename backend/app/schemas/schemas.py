@@ -57,3 +57,8 @@ class CicloResponse(BaseModel):
     
     class Config:
         from_attributes = True
+        from pydantic import BaseModel
+
+class UserCreate(BaseModel):
+    username: str
+    password: str

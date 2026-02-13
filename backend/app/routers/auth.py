@@ -13,7 +13,8 @@ from app.core.config import settings
 router = APIRouter()
 
 # Configuração para extrair o token do Header Authorization
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/token")
+# Mantenha "token" para bater com o que o Frontend já usa
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def get_db():
     db = SessionLocal()
@@ -54,7 +55,7 @@ def login_for_access_token(form_data: LoginData, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Token válido por 24 horas (configurado no settings)
+    # Token válido pelo tempo configurado (geralmente 24h)
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username, "role": user.role}, 
@@ -73,9 +74,9 @@ def login_for_access_token(form_data: LoginData, db: Session = Depends(get_db)):
 def register_new_user(
     new_user_data: LoginData, 
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user) # Só entra se estiver logado
+    current_user: User = Depends(get_current_user)
 ):
-    # BLOQUEIO DE SEGURANÇA: Só o Thiago Bettin tem a chave da mansão
+    # BLOQUEIO DE SEGURANÇA: Só o Thiago Bettin cria contas
     if current_user.username != "thiagobettin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
@@ -94,7 +95,7 @@ def register_new_user(
     new_user = User(
         username=new_user_data.username,
         hashed_password=get_password_hash(new_user_data.password),
-        role="user", # Os criados manualmente nunca são admin
+        role="user", 
         is_active=True
     )
     

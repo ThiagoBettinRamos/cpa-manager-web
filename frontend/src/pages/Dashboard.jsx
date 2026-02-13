@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, User, Wifi, DollarSign, Smartphone, 
-  Copy, Check, LogOut, Hash, ChevronDown, Settings, Trophy, Link as LinkIcon, FileText, Send
+  Copy, Check, LogOut, Hash, ChevronDown, Settings, Trophy, Link as LinkIcon, FileText, Send, UserPlus
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -32,6 +32,22 @@ export default function Dashboard() {
     setTimeout(() => setToast({ show: false, message: "" }), 4000);
   };
 
+  // --- NAVEGAÇÃO PARA O PAINEL ADMIN ---
+  const handleAddUser = () => {
+    navigate('/admin'); // Redireciona para a página bonita que você criou
+  };
+
+  async function handleAdminGeneralReport() {
+    try {
+      showToast("Disparando relatório geral para todos... 🚀");
+      await api.get('/relatorio-geral-admin');
+      showToast("Todos os e-mails foram enviados! ✅");
+    } catch (err) {
+      showToast("Acesso negado ou erro no servidor ❌");
+    }
+  }
+
+  // --- FUNÇÕES EXISTENTES ---
   async function loadRanking() {
     try {
       const res = await api.get('/ranking');
@@ -68,7 +84,7 @@ export default function Dashboard() {
       if (res.data) setCiclos([res.data, ...ciclos]);
     } catch (err) { 
         console.error(err);
-        showToast("Erro ao criar ciclo. Verifique o banco de dados ❌"); 
+        showToast("Erro ao criar ciclo ❌"); 
     }
   }
 
@@ -93,11 +109,11 @@ export default function Dashboard() {
 
   async function handleWeeklyReport() {
     try {
-      showToast("Enviando relatório para seu e-mail...");
+      showToast("Enviando seu relatório para e-mail...");
       await api.get('/relatorio-semanal');
       showToast("Relatório enviado com sucesso! ✅");
     } catch (err) { 
-      showToast("Erro ao enviar e-mail. Verifique o servidor ❌"); 
+      showToast("Erro ao enviar e-mail ❌"); 
     }
   }
 
@@ -134,8 +150,20 @@ export default function Dashboard() {
           </div>
           
           <div className="flex gap-3">
+            {/* BOTÕES ADMINISTRATIVOS EXCLUSIVOS */}
+            {user?.username === "thiagobettin" && (
+              <>
+                <button onClick={handleAdminGeneralReport} title="Relatório de todos os usuários" className="bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-500/30 px-4 py-2.5 rounded-xl font-black text-[10px] transition-all flex items-center gap-2">
+                  <FileText size={14} /> GERAL
+                </button>
+                <button onClick={handleAddUser} className="bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 px-4 py-2.5 rounded-xl font-black text-[10px] transition-all flex items-center gap-2">
+                  <UserPlus size={14} /> ADD OPERADOR
+                </button>
+              </>
+            )}
+
             <button onClick={handleWeeklyReport} className="bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 px-4 py-2.5 rounded-xl font-black text-[10px] transition-all flex items-center gap-2">
-              <FileText size={14} /> RELATÓRIO E-MAIL
+              <FileText size={14} /> MEU RELATÓRIO
             </button>
             <button onClick={handleNewCycle} className="bg-fuchsia-600 hover:bg-fuchsia-500 px-6 py-2.5 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg">
               <Plus size={18} /> NOVO CICLO
@@ -146,6 +174,7 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* ... Restante do código (Listagem e Ranking) mantido igual ... */}
         <div className="flex flex-1 gap-6 overflow-hidden">
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-10">
             <div className="flex flex-col gap-8">
@@ -258,6 +287,7 @@ export default function Dashboard() {
   );
 }
 
+// COMPONENTES AUXILIARES MANTIDOS
 function ClickCopyInput({ label, value, onSave, color="text-white" }) {
   const [val, setVal] = useState(value || "");
   const [copied, setCopied] = useState(false);
